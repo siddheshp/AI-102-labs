@@ -23,7 +23,6 @@ namespace rest_client
                 AiSvcEndpoint = configuration["AIServicesEndpoint"];
                 AiSvCKey = configuration["AIServicesKey"];
 
-
                 // Get user input (until they enter "quit")
                 string userText = "";
                 while (userText.ToLower() != "quit")
@@ -43,6 +42,7 @@ namespace rest_client
                 Console.WriteLine(ex.Message);
             }
         }
+
         static async Task GetLanguage(string text)
         {
             // Construct the JSON request body
@@ -57,11 +57,11 @@ namespace rest_client
                             new JProperty("id", 1),
                             new JProperty("text", text)
                     ))));
-                
+
                 // Encode as UTF-8
                 UTF8Encoding utf8 = new UTF8Encoding(true, true);
                 byte[] encodedBytes = utf8.GetBytes(jsonBody.ToString());
-                
+
                 // Let's take a look at the JSON we'll send to the service
                 Console.WriteLine(utf8.GetString(encodedBytes, 0, encodedBytes.Length));
 
@@ -103,11 +103,10 @@ namespace rest_client
                     Console.WriteLine(response.ToString());
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
-
         }
     }
 }
