@@ -1,3 +1,5 @@
+# pip install azure-ai-language-questionanswering
+ 
 from dotenv import load_dotenv
 import os
 

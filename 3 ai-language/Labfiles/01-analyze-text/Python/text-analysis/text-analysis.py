@@ -1,3 +1,6 @@
+#  pip install azure-ai-textanalytics==5.3.0
+#  pip install python-dotenv
+
 from dotenv import load_dotenv
 import os
 
@@ -53,8 +56,8 @@ def main():
                 for linked_entity in entities:
                     print('\t{} ({})'.format(linked_entity.name, linked_entity.url))
 
-                except Exception as ex:
-                    print(ex)
+    except Exception as ex:
+        print(ex)
 
 if __name__ == "__main__":
     main()
