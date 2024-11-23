@@ -1,4 +1,6 @@
-﻿using System;
+﻿// dotnet add package Azure.AI.TextAnalytics
+
+using System;
 using Azure;
 using Microsoft.Extensions.Configuration;
 using System.Text;
@@ -20,6 +22,10 @@ namespace sdk_client
                 IConfigurationRoot configuration = builder.Build();
                 AISvcEndpoint = configuration["AIServicesEndpoint"];
                 AISvcKey = configuration["AIServicesKey"];
+
+                // Log the endpoint and key for debugging (be cautious with logging sensitive information in production)
+                Console.WriteLine($"Using Endpoint: {AISvcEndpoint}");
+                Console.WriteLine($"Using Key: {AISvcKey}");
 
                 // Get user input (until they enter "quit")
                 string userText = "";
@@ -51,8 +57,7 @@ namespace sdk_client
 
             // Call the service to get the detected language
             DetectedLanguage detectedLanguage = client.DetectLanguage(text);
-            return(detectedLanguage.Name);
-
+            return (detectedLanguage.Name);
         }
     }
 }

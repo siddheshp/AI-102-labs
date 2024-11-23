@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Azure;
 using Azure.AI.Translation.Text;
 
-
 namespace translate_text
 {
     class Program
@@ -54,7 +53,6 @@ namespace translate_text
 
                 }
 
-
                 // Translate text
                 string inputText = "";
                 while (inputText.ToLower() != "quit")
@@ -70,15 +68,11 @@ namespace translate_text
                         Console.WriteLine($"'{inputText}' translated from {sourceLanguage} to {translation?.Translations[0].To} as '{translation?.Translations?[0]?.Text}'.");
                     }
                 }
-
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
         }
-
-
-
     }
 }
