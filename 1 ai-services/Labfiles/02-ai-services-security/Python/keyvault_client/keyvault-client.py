@@ -1,10 +1,13 @@
+# pip install azure-ai-textanalytics==5.3.0
+#  pip install azure-identity==1.17.1
+#  pip install azure-keyvault-secrets==4.8.0
+
 from dotenv import load_dotenv
 import os
 from azure.ai.textanalytics import TextAnalyticsClient
 from azure.core.credentials import AzureKeyCredential
 from azure.keyvault.secrets import SecretClient
 from azure.identity import ClientSecretCredential
-
 
 def main():
     global ai_endpoint

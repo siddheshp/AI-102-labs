@@ -1,3 +1,5 @@
+# pip install azure-ai-textanalytics==5.3.0
+
 from dotenv import load_dotenv
 import os
 from azure.core.credentials import AzureKeyCredential
