@@ -1,3 +1,5 @@
+# pip install azure-ai-translation-text==1.0.0b1
+
 from dotenv import load_dotenv
 import os
 
@@ -45,7 +47,6 @@ def main():
 
     except Exception as ex:
         print(ex)
-
 
 if __name__ == "__main__":
     main()
