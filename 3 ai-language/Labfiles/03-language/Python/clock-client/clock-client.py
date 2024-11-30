@@ -1,4 +1,5 @@
 # pip install azure-ai-language-conversations
+# pip install python-dateutil
 
 from dotenv import load_dotenv
 import os
