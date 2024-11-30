@@ -1,3 +1,7 @@
+# pip install azure-ai-vision-imageanalysis==1.0.0b3
+# pip install Pillow
+# pip install matplotlib
+
 from dotenv import load_dotenv
 import os
 from PIL import Image, ImageDraw
@@ -6,8 +10,10 @@ from matplotlib import pyplot as plt
 from azure.core.exceptions import HttpResponseError
 import requests
 
-# Import namespaces
-
+# import namespaces
+from azure.ai.vision.imageanalysis import ImageAnalysisClient
+from azure.ai.vision.imageanalysis.models import VisualFeatures
+from azure.core.credentials import AzureKeyCredential
 
 def main():
     global cv_client
@@ -27,10 +33,10 @@ def main():
             image_data = f.read()
 
         # Authenticate Azure AI Vision client
-cv_client = ImageAnalysisClient(
-    endpoint=ai_endpoint,
-    credential=AzureKeyCredential(ai_key)
-)
+        cv_client = ImageAnalysisClient(
+            endpoint=ai_endpoint,
+            credential=AzureKeyCredential(ai_key)
+        )
         
         # Analyze image
         AnalyzeImage(image_file, image_data, cv_client)
@@ -76,13 +82,13 @@ def AnalyzeImage(image_filename, image_data, cv_client):
 
     # Get image tags
     if result.tags is not None:
-    print("\nTags:")
-    for tag in result.tags.list:
-        print(" Tag: '{}' (confidence: {:.2f}%)".format(tag.name, tag.confidence * 100))
+            print("\nTags:")
+            for tag in result.tags.list:
+                print(" Tag: '{}' (confidence: {:.2f}%)".format(tag.name, tag.confidence * 100))
 
     # Get objects in the image
     if result.objects is not None:
-    print("\nObjects in image:")
+        print("\nObjects in image:")
 
     # Prepare image for drawing
     image = Image.open(image_filename)
@@ -110,30 +116,30 @@ def AnalyzeImage(image_filename, image_data, cv_client):
 
     # Get people in the image
     if result.people is not None:
-    print("\nPeople in image:")
+        print("\nPeople in image:")
 
-    # Prepare image for drawing
-    image = Image.open(image_filename)
-    fig = plt.figure(figsize=(image.width/100, image.height/100))
-    plt.axis('off')
-    draw = ImageDraw.Draw(image)
-    color = 'cyan'
+        # Prepare image for drawing
+        image = Image.open(image_filename)
+        fig = plt.figure(figsize=(image.width/100, image.height/100))
+        plt.axis('off')
+        draw = ImageDraw.Draw(image)
+        color = 'cyan'
 
-    for detected_people in result.people.list:
-        # Draw object bounding box
-        r = detected_people.bounding_box
-        bounding_box = ((r.x, r.y), (r.x + r.width, r.y + r.height))
-        draw.rectangle(bounding_box, outline=color, width=3)
+        for detected_people in result.people.list:
+            # Draw object bounding box
+            r = detected_people.bounding_box
+            bounding_box = ((r.x, r.y), (r.x + r.width, r.y + r.height))
+            draw.rectangle(bounding_box, outline=color, width=3)
 
-        # Return the confidence of the person detected
-        #print(" {} (confidence: {:.2f}%)".format(detected_people.bounding_box, detected_people.confidence * 100))
-        
-    # Save annotated image
-    plt.imshow(image)
-    plt.tight_layout(pad=0)
-    outputfile = 'people.jpg'
-    fig.savefig(outputfile)
-    print('  Results saved in', outputfile)
+            # Return the confidence of the person detected
+            print(" {} (confidence: {:.2f}%)".format(detected_people.bounding_box, detected_people.confidence * 100))
+            
+        # Save annotated image
+        plt.imshow(image)
+        plt.tight_layout(pad=0)
+        outputfile = 'people.jpg'
+        fig.savefig(outputfile)
+        print('  Results saved in', outputfile)
 
 def BackgroundForeground(endpoint, key, image_file):
     # Define the API version and mode
@@ -141,27 +147,27 @@ def BackgroundForeground(endpoint, key, image_file):
     mode="backgroundRemoval" # Can be "foregroundMatting" or "backgroundRemoval"
     
     # Remove the background from the image or generate a foreground matte
-print('\nRemoving background from image...')
+    print('\nRemoving background from image...')
     
-url = "{}computervision/imageanalysis:segment?api-version={}&mode={}".format(endpoint, api_version, mode)
+    url = "{}computervision/imageanalysis:segment?api-version={}&mode={}".format(endpoint, api_version, mode)
 
-headers= {
-    "Ocp-Apim-Subscription-Key": key, 
-    "Content-Type": "application/json" 
-}
+    headers= {
+        "Ocp-Apim-Subscription-Key": key, 
+        "Content-Type": "application/json" 
+    }
 
-image_url="https://github.com/MicrosoftLearning/mslearn-ai-vision/blob/main/Labfiles/01-analyze-images/Python/image-analysis/{}?raw=true".format(image_file)  
+    image_url="https://github.com/MicrosoftLearning/mslearn-ai-vision/blob/main/Labfiles/01-analyze-images/Python/image-analysis/{}?raw=true".format(image_file)  
 
-body = {
-    "url": image_url,
-}
-    
-response = requests.post(url, headers=headers, json=body)
+    body = {
+        "url": image_url,
+    }
+        
+    response = requests.post(url, headers=headers, json=body)
 
-image=response.content
-with open("backgroundForeground.png", "wb") as file:
-    file.write(image)
-print('  Results saved in backgroundForeground.png \n')
+    image=response.content
+    with open("backgroundForeground.png", "wb") as file:
+        file.write(image)
+    print('  Results saved in backgroundForeground.png \n')
     
 if __name__ == "__main__":
     main()
