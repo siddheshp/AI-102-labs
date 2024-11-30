@@ -90,29 +90,29 @@ def AnalyzeImage(image_filename, image_data, cv_client):
     if result.objects is not None:
         print("\nObjects in image:")
 
-    # Prepare image for drawing
-    image = Image.open(image_filename)
-    fig = plt.figure(figsize=(image.width/100, image.height/100))
-    plt.axis('off')
-    draw = ImageDraw.Draw(image)
-    color = 'cyan'
+        # Prepare image for drawing
+        image = Image.open(image_filename)
+        fig = plt.figure(figsize=(image.width/100, image.height/100))
+        plt.axis('off')
+        draw = ImageDraw.Draw(image)
+        color = 'cyan'
 
-    for detected_object in result.objects.list:
-        # Print object name
-        print(" {} (confidence: {:.2f}%)".format(detected_object.tags[0].name, detected_object.tags[0].confidence * 100))
-        
-        # Draw object bounding box
-        r = detected_object.bounding_box
-        bounding_box = ((r.x, r.y), (r.x + r.width, r.y + r.height)) 
-        draw.rectangle(bounding_box, outline=color, width=3)
-        plt.annotate(detected_object.tags[0].name,(r.x, r.y), backgroundcolor=color)
+        for detected_object in result.objects.list:
+            # Print object name
+            print(" {} (confidence: {:.2f}%)".format(detected_object.tags[0].name, detected_object.tags[0].confidence * 100))
+            
+            # Draw object bounding box
+            r = detected_object.bounding_box
+            bounding_box = ((r.x, r.y), (r.x + r.width, r.y + r.height)) 
+            draw.rectangle(bounding_box, outline=color, width=3)
+            plt.annotate(detected_object.tags[0].name,(r.x, r.y), backgroundcolor=color)
 
-    # Save annotated image
-    plt.imshow(image)
-    plt.tight_layout(pad=0)
-    outputfile = 'objects.jpg'
-    fig.savefig(outputfile)
-    print('  Results saved in', outputfile)
+        # Save annotated image
+        plt.imshow(image)
+        plt.tight_layout(pad=0)
+        outputfile = 'objects.jpg'
+        fig.savefig(outputfile)
+        print('  Results saved in', outputfile)
 
     # Get people in the image
     if result.people is not None:
