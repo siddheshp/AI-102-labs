@@ -1,12 +1,14 @@
+# pip install azure-ai-vision-face==1.0.0b2
+
 from dotenv import load_dotenv
 import os
 from PIL import Image, ImageDraw
 from matplotlib import pyplot as plt
 
- # Import namespaces
- from azure.cognitiveservices.vision.face import FaceClient
- from azure.cognitiveservices.vision.face.models import FaceAttributeType
- from msrest.authentication import CognitiveServicesCredentials
+# Import namespaces
+from azure.ai.vision.face import FaceClient
+from azure.ai.vision.face.models import FaceDetectionModel, FaceRecognitionModel, FaceAttributeTypeDetection03
+from azure.core.credentials import AzureKeyCredential
 
 def main():
 
@@ -18,9 +20,11 @@ def main():
         cog_endpoint = os.getenv('AI_SERVICE_ENDPOINT')
         cog_key = os.getenv('AI_SERVICE_KEY')
 
-         # Authenticate Face client
-        credentials = CognitiveServicesCredentials(cog_key)
-        face_client = FaceClient(cog_endpoint, credentials)
+        # Authenticate Face client
+        face_client = FaceClient(
+            endpoint=cog_endpoint,
+            credential=AzureKeyCredential(cog_key)
+        )
 
         # Menu for face functions
         print('1: Detect faces\nAny other key to quit')
@@ -34,62 +38,59 @@ def main():
 def DetectFaces(image_file):
     print('Detecting faces in', image_file)
 
-     # Specify facial features to be retrieved
- features = [FaceAttributeType.occlusion,
-             FaceAttributeType.blur,
-             FaceAttributeType.glasses]
- 
-# Get faces
-with open(image_file, mode="rb") as image_data:
-    detected_faces = face_client.face.detect_with_stream(image=image_data,
-                                                            return_face_attributes=features,                     return_face_id=False)
+    # Specify facial features to be retrieved
+    features = [FaceAttributeTypeDetection03.HEAD_POSE,
+                FaceAttributeTypeDetection03.BLUR,
+                FaceAttributeTypeDetection03.MASK]
 
-    if len(detected_faces) > 0:
-        print(len(detected_faces), 'faces detected.')
+    # Get faces
+    with open(image_file, mode="rb") as image_data:
+        detected_faces = face_client.detect(
+            image_content=image_data.read(),
+            detection_model=FaceDetectionModel.DETECTION03,
+            recognition_model=FaceRecognitionModel.RECOGNITION04,
+            return_face_id=False,
+            return_face_attributes=features,
+        )
 
-        # Prepare image for drawing
-        fig = plt.figure(figsize=(8, 6))
-        plt.axis('off')
-        image = Image.open(image_file)
-        draw = ImageDraw.Draw(image)
-        color = 'lightgreen'
-        face_count = 0
+        if len(detected_faces) > 0:
+            print(len(detected_faces), 'faces detected.')
 
-        # Draw and annotate each face
-        for face in detected_faces:
-
-            # Get face properties
-            face_count += 1
-            print('\nFace number {}'.format(face_count))
-
-            detected_attributes = face.face_attributes.as_dict()
-            if 'blur' in detected_attributes:
-                print(' - Blur:')
-                for blur_name in detected_attributes['blur']:
-                    print('   - {}: {}'.format(blur_name, detected_attributes['blur'][blur_name]))
-                    
-            if 'occlusion' in detected_attributes:
-                print(' - Occlusion:')
-                for occlusion_name in detected_attributes['occlusion']:
-                    print('   - {}: {}'.format(occlusion_name, detected_attributes['occlusion'][occlusion_name]))
-
-            if 'glasses' in detected_attributes:
-                print(' - Glasses:{}'.format(detected_attributes['glasses']))
-
-            # Draw and annotate face
-            r = face.face_rectangle
-            bounding_box = ((r.left, r.top), (r.left + r.width, r.top + r.height))
+            # Prepare image for drawing
+            fig = plt.figure(figsize=(8, 6))
+            plt.axis('off')
+            image = Image.open(image_file)
             draw = ImageDraw.Draw(image)
-            draw.rectangle(bounding_box, outline=color, width=5)
-            annotation = 'Face number {}'.format(face_count)
-            plt.annotate(annotation,(r.left, r.top), backgroundcolor=color)
+            color = 'lightgreen'
+            face_count = 0
 
-        # Save annotated image
-        plt.imshow(image)
-        outputfile = 'detected_faces.jpg'
-        fig.savefig(outputfile)
+            # Draw and annotate each face
+            for face in detected_faces:
 
-        print('\nResults saved in', outputfile)
+                # Get face properties
+                face_count += 1
+                print('\nFace number {}'.format(face_count))
+
+                print(' - Head Pose (Yaw): {}'.format(face.face_attributes.head_pose.yaw))
+                print(' - Head Pose (Pitch): {}'.format(face.face_attributes.head_pose.pitch))
+                print(' - Head Pose (Roll): {}'.format(face.face_attributes.head_pose.roll))
+                print(' - Blur: {}'.format(face.face_attributes.blur.blur_level))
+                print(' - Mask: {}'.format(face.face_attributes.mask.type))
+
+                # Draw and annotate face
+                r = face.face_rectangle
+                bounding_box = ((r.left, r.top), (r.left + r.width, r.top + r.height))
+                draw = ImageDraw.Draw(image)
+                draw.rectangle(bounding_box, outline=color, width=5)
+                annotation = 'Face number {}'.format(face_count)
+                plt.annotate(annotation,(r.left, r.top), backgroundcolor=color)
+
+            # Save annotated image
+            plt.imshow(image)
+            outputfile = 'detected_faces.jpg'
+            fig.savefig(outputfile)
+
+            print('\nResults saved in', outputfile)
 
 if __name__ == "__main__":
     main()

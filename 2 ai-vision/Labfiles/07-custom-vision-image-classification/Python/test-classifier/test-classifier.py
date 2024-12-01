@@ -1,3 +1,5 @@
+# pip install azure-cognitiveservices-vision-customvision==3.1.0
+
 from azure.cognitiveservices.vision.customvision.prediction import CustomVisionPredictionClient
 from msrest.authentication import ApiKeyCredentials
 import os
@@ -31,4 +33,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

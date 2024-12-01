@@ -1,3 +1,5 @@
+# pip install azure-cognitiveservices-vision-customvision==3.1.0
+
 from azure.cognitiveservices.vision.customvision.training import CustomVisionTrainingClient
 from azure.cognitiveservices.vision.customvision.training.models import ImageFileCreateBatch, ImageFileCreateEntry, Region
 from msrest.authentication import ApiKeyCredentials
@@ -53,5 +55,3 @@ def Train_Model():
 
 if __name__ == "__main__":
     main()
-
-
