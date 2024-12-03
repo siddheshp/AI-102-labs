@@ -1,4 +1,4 @@
-# pip install azure-ai-formrecognizer
+#  pip install azure-ai-formrecognizer==3.3.3
 
 from azure.core.credentials import AzureKeyCredential
 from azure.ai.formrecognizer import DocumentAnalysisClient

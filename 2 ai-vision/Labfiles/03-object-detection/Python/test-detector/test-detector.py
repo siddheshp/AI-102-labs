@@ -1,3 +1,5 @@
+# pip install azure-cognitiveservices-vision-customvision==3.1.1
+
 from azure.cognitiveservices.vision.customvision.prediction import CustomVisionPredictionClient
 from msrest.authentication import ApiKeyCredentials
 from matplotlib import pyplot as plt
