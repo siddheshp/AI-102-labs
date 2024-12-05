@@ -1,4 +1,5 @@
-# pip install azure-search-documents
+# pip install azure-search-documents==11.5.1
+# pip install flask
 
 import os
 from flask import Flask, request, render_template, redirect, url_for
@@ -7,7 +8,6 @@ from dotenv import load_dotenv
 # Import search namespaces
 from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
-
 
 app = Flask(__name__)
 
@@ -20,12 +20,10 @@ search_index = os.getenv('SEARCH_INDEX_NAME')
 # Wrapper function for request to search index
 def search_query(search_text, filter_by=None, sort_order=None):
     try:
-
         # Create a search client
         azure_credential = AzureKeyCredential(search_key)
         search_client = SearchClient(search_endpoint, search_index, azure_credential)
         
-
         # Submit search query
         results =  search_client.search(search_text,
                                         search_mode="all",
@@ -37,8 +35,6 @@ def search_query(search_text, filter_by=None, sort_order=None):
                                         select = "url,metadata_storage_name,metadata_author,metadata_storage_size,metadata_storage_last_modified,language,sentiment,merged_content,keyphrases,locations,imageTags,imageCaption")
         return results
         
-
-
     except Exception as ex:
         raise ex
 
@@ -51,7 +47,6 @@ def home():
 @app.route("/search", methods=['GET'])
 def search():
     try:
-
         # Get the search terms from the request form
         search_text = request.args["search"]
 
