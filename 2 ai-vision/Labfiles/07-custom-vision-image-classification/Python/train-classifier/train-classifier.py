@@ -52,6 +52,5 @@ def Train_Model():
         time.sleep(5)
     print ("Model trained!")
 
-
 if __name__ == "__main__":
     main()

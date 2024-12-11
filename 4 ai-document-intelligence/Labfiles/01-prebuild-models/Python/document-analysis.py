@@ -37,9 +37,12 @@ for idx, receipt in enumerate(receipts.documents):
     if customer_name:
         print(f"Customer Name: '{customer_name.value}, with confidence {customer_name.confidence}.")
 
-
     invoice_total = receipt.fields.get("InvoiceTotal")
     if invoice_total:
         print(f"Invoice Total: '{invoice_total.value.symbol}{invoice_total.value.amount}, with confidence {invoice_total.confidence}.")
+    
+    amount_due = receipt.fields.get("AmountDue")
+    if amount_due:
+        print(f"Amount Due: {amount_due.value.amount} has confidence: {amount_due.confidence}")
 
 print("\nAnalysis complete.\n")
