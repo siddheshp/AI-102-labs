@@ -1,4 +1,4 @@
-# pip install openai
+# pip install openai==1.13.3
 
 import os
 import asyncio
@@ -51,7 +51,6 @@ async def main():
 async def call_openai_model(system_message, user_message, model, client):
     
     # Format and send the request to the model
-    # Format and send the request to the model
     # print("\nAdding grounding context from grounding.txt")
     # grounding_text = open(file="grounding.txt", encoding="utf8").read().strip()
     # user_message = grounding_text + user_message
@@ -70,7 +69,6 @@ async def call_openai_model(system_message, user_message, model, client):
         temperature=0.7,
         max_tokens=800
     )
-    
     
     if printFullResponse:
         print(response)

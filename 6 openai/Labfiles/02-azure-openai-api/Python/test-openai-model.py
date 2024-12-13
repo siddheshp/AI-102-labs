@@ -1,10 +1,10 @@
-# pip install openai
+# pip install openai==1.55.3
 
 import os
 from dotenv import load_dotenv
 
- # Add Azure OpenAI package
- from openai import AzureOpenAI
+# Add Azure OpenAI package
+from openai import AzureOpenAI
 
 def main(): 
         
@@ -59,8 +59,7 @@ def main():
 
             # Print the response
             print("Response: " + generated_text + "\n")
-            
-            
+                        
             # Add code to send request...
             # # Send request to Azure OpenAI model
             # messages_array.append({"role": "user", "content": input_text})
