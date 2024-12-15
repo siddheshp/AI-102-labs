@@ -1,4 +1,4 @@
-# pip install openai
+# pip install openai==1.13.3
 
 import os
 import json
@@ -11,7 +11,7 @@ def main():
         
     try:
         # Flag to show citations
-        show_citations = False
+        show_citations = True
 
         # Get configuration settings 
         load_dotenv()
@@ -43,7 +43,6 @@ def main():
                 }]
             )
 
-
         # Send request to Azure OpenAI model
         print("...Sending the following request to Azure OpenAI endpoint...")
         print("Request: " + text + "\n")
@@ -69,14 +68,9 @@ def main():
             citation_json = json.loads(citations)
             for c in citation_json["citations"]:
                 print("  Title: " + c['title'] + "\n    URL: " + c['url'])
-
-
         
     except Exception as ex:
         print(ex)
 
-
 if __name__ == '__main__': 
     main()
-
-
